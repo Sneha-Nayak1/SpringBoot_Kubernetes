@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: product-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-microservice
+  template:
+    metadata:
+      labels:
+        app: product-microservice
+    spec:
+      containers:
+      - name: product-microservice
+        image: localhost:6000/product:latest
+        ports:
+        - containerPort: 8082
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/application.properties
+          subPath: application.properties
+        env:
+        - name: SPRING_CONFIG_LOCATION
+          value: /config/application.properties
+      volumes:
+      - name: config-volume
+        configMap:
+          name: product-service-config

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-microservice
+  template:
+    metadata:
+      labels:
+        app: order-microservice
+    spec:
+      containers:
+      - name: order-microservice
+        image: localhost:6000/order:latest
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config/application.properties
+          subPath: application.properties
+        env:
+        - name: SPRING_CONFIG_LOCATION
+          value: /config/application.properties
+      volumes:
+      - name: config-volume
+        configMap:
+          name: order-service-config
